@@ -1,0 +1,24 @@
+---
+- name: Configure webservers
+  hosts: webservers
+  vars:
+    ansible_shell_type: cmd
+  tasks:
+    - name: Run sql
+      win_shell: 'echo hola'
+      no_log: false
+      register: result
+      ignore_errors: true
+    - name: debug tasks success
+      debug:
+        var: result.stdout
+      when: result.rc == 0
+    - name: debug tasks error
+      debug:
+        var: result.stderr
+      when: result.failed
+    - name: fail when invoke-cmd fail
+      fail:
+        msg: task failed
+      when: result.failed
+...
